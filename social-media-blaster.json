@@ -1,0 +1,2097 @@
+{
+    "name": "Automated Event Posting",
+    "flow": [
+        {
+            "id": 1,
+            "module": "action-network:watchEvents",
+            "version": 2,
+            "parameters": {
+                "limit": 1,
+                "filter": "",
+                "date_field": "created_date",
+                "__IMTCONN__": 1738225,
+                "simple_filter": {
+                    "property": ""
+                }
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -535,
+                    "y": 472
+                },
+                "restore": {
+                    "parameters": {
+                        "filter": {
+                            "collapsed": true
+                        },
+                        "date_field": {
+                            "label": "New events only"
+                        },
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "action-network"
+                            },
+                            "label": "mhk_dsa"
+                        },
+                        "simple_filter": {
+                            "nested": {
+                                "property": {
+                                    "label": "Empty"
+                                }
+                            },
+                            "collapsed": true
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:action-network",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "date_field",
+                        "type": "select",
+                        "label": "Watch for new or modified events?",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "created_date",
+                                "modified_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "event_campaign_id",
+                        "type": "select",
+                        "label": "Event Campaign"
+                    },
+                    {
+                        "name": "simple_filter",
+                        "spec": [
+                            {
+                                "name": "property",
+                                "type": "select",
+                                "label": "Property",
+                                "validate": {
+                                    "enum": [
+                                        "created_date",
+                                        "modified_date",
+                                        "origin_system",
+                                        "title",
+                                        "start_date",
+                                        "end_date"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Only watch events that fit this filter:"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    },
+                    {
+                        "name": "filter",
+                        "type": "text",
+                        "label": "Raw string filter, overides the simple filter"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 18,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 82,
+                    "y": 467
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 5,
+                            "module": "builtin:BasicRouter",
+                            "version": 1,
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 900
+                                }
+                            },
+                            "routes": [
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 6,
+                                            "module": "discord:createMessage",
+                                            "version": 2,
+                                            "parameters": {
+                                                "__IMTCONN__": 1702468
+                                            },
+                                            "mapper": {
+                                                "select": "channel",
+                                                "content": "We are having an Event! \n\nEvent title:{{1.title}} \n\nAbout: {{stripHTML(1.description)}}\n\nSign up here: {{1.browser_url}}",
+                                                "channelId": "1100839737452924961",
+                                                "message_reference": {}
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 600
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "tts": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "files": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "embeds": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "select": {
+                                                            "label": "Send a Message to a Channel"
+                                                        },
+                                                        "channelId": {
+                                                            "mode": "chose",
+                                                            "label": "general"
+                                                        },
+                                                        "components": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "sticker_ids": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "discord"
+                                                            },
+                                                            "label": "My Discord connection (Integromat (integromat))"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:discord",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "select",
+                                                        "type": "select",
+                                                        "label": "Choose a Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "channel",
+                                                                "thread",
+                                                                "user"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Message"
+                                                    },
+                                                    {
+                                                        "name": "tts",
+                                                        "type": "boolean",
+                                                        "label": "Is TTS message"
+                                                    },
+                                                    {
+                                                        "name": "embeds",
+                                                        "spec": [
+                                                            {
+                                                                "name": "title",
+                                                                "type": "text",
+                                                                "label": "Title"
+                                                            },
+                                                            {
+                                                                "name": "type",
+                                                                "type": "text",
+                                                                "label": "Type"
+                                                            },
+                                                            {
+                                                                "name": "description",
+                                                                "type": "text",
+                                                                "label": "Description"
+                                                            },
+                                                            {
+                                                                "name": "url",
+                                                                "type": "url",
+                                                                "label": "URL"
+                                                            },
+                                                            {
+                                                                "name": "timestamp",
+                                                                "type": "date",
+                                                                "label": "Timestamp"
+                                                            },
+                                                            {
+                                                                "name": "color",
+                                                                "type": "uinteger",
+                                                                "label": "Color"
+                                                            },
+                                                            {
+                                                                "name": "footer",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text"
+                                                                    },
+                                                                    {
+                                                                        "name": "icon_url",
+                                                                        "type": "url",
+                                                                        "label": "Icon URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "proxy_icon_url",
+                                                                        "type": "url",
+                                                                        "label": "Proxy Icon URL"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Footer"
+                                                            },
+                                                            {
+                                                                "name": "image",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "url",
+                                                                        "type": "url",
+                                                                        "label": "URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "proxy_url",
+                                                                        "type": "url",
+                                                                        "label": "Proxy URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "height",
+                                                                        "type": "uinteger",
+                                                                        "label": "Height"
+                                                                    },
+                                                                    {
+                                                                        "name": "width",
+                                                                        "type": "uinteger",
+                                                                        "label": "Width"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Image"
+                                                            },
+                                                            {
+                                                                "name": "thumbnail",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "url",
+                                                                        "type": "url",
+                                                                        "label": "URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "proxy_url",
+                                                                        "type": "url",
+                                                                        "label": "Proxy URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "height",
+                                                                        "type": "uinteger",
+                                                                        "label": "Height"
+                                                                    },
+                                                                    {
+                                                                        "name": "width",
+                                                                        "type": "uinteger",
+                                                                        "label": "Width"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Thumbnail"
+                                                            },
+                                                            {
+                                                                "name": "video",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "url",
+                                                                        "type": "url",
+                                                                        "label": "URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "height",
+                                                                        "type": "uinteger",
+                                                                        "label": "Height"
+                                                                    },
+                                                                    {
+                                                                        "name": "width",
+                                                                        "type": "uinteger",
+                                                                        "label": "Width"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Video"
+                                                            },
+                                                            {
+                                                                "name": "provider",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "name",
+                                                                        "type": "text",
+                                                                        "label": "Name"
+                                                                    },
+                                                                    {
+                                                                        "name": "url",
+                                                                        "type": "url",
+                                                                        "label": "URL"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Provider"
+                                                            },
+                                                            {
+                                                                "name": "author",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "name",
+                                                                        "type": "text",
+                                                                        "label": "Name"
+                                                                    },
+                                                                    {
+                                                                        "name": "url",
+                                                                        "type": "url",
+                                                                        "label": "URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "icon_url",
+                                                                        "type": "url",
+                                                                        "label": "Icon URL"
+                                                                    },
+                                                                    {
+                                                                        "name": "proxy_icon_url",
+                                                                        "type": "url",
+                                                                        "label": "Proxy Icon URL"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Author"
+                                                            },
+                                                            {
+                                                                "name": "fields",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "name",
+                                                                        "type": "text",
+                                                                        "label": "Name"
+                                                                    },
+                                                                    {
+                                                                        "name": "value",
+                                                                        "type": "text",
+                                                                        "label": "Value"
+                                                                    },
+                                                                    {
+                                                                        "name": "inline",
+                                                                        "type": "boolean",
+                                                                        "label": "Inline Flag"
+                                                                    }
+                                                                ],
+                                                                "type": "array",
+                                                                "label": "Fields"
+                                                            }
+                                                        ],
+                                                        "type": "array",
+                                                        "label": "Embeds"
+                                                    },
+                                                    {
+                                                        "name": "sticker_ids",
+                                                        "spec": [
+                                                            {
+                                                                "name": "id",
+                                                                "type": "text",
+                                                                "label": "Sticker ID",
+                                                                "required": true
+                                                            }
+                                                        ],
+                                                        "type": "array",
+                                                        "label": "Stickers"
+                                                    },
+                                                    {
+                                                        "name": "components",
+                                                        "spec": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "select",
+                                                                "label": "Component Type",
+                                                                "options": [
+                                                                    {
+                                                                        "label": "A New Row",
+                                                                        "value": 1,
+                                                                        "nested": [
+                                                                            {
+                                                                                "name": "components",
+                                                                                "spec": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "select",
+                                                                                        "label": "Row Component Type",
+                                                                                        "options": [
+                                                                                            {
+                                                                                                "label": "Button",
+                                                                                                "value": 2,
+                                                                                                "nested": [
+                                                                                                    {
+                                                                                                        "name": "style",
+                                                                                                        "type": "select",
+                                                                                                        "label": "Style",
+                                                                                                        "options": [
+                                                                                                            {
+                                                                                                                "label": "Primary (blurple)",
+                                                                                                                "value": 1,
+                                                                                                                "nested": [
+                                                                                                                    {
+                                                                                                                        "help": "A developer-defined identifier for the button, max 100 characters.",
+                                                                                                                        "name": "custom_id",
+                                                                                                                        "type": "text",
+                                                                                                                        "label": "Custom ID",
+                                                                                                                        "required": true
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "Secondary (grey)",
+                                                                                                                "value": 2,
+                                                                                                                "nested": [
+                                                                                                                    {
+                                                                                                                        "help": "A developer-defined identifier for the button, max 100 characters.",
+                                                                                                                        "name": "custom_id",
+                                                                                                                        "type": "text",
+                                                                                                                        "label": "Custom ID",
+                                                                                                                        "required": true
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "Success (green)",
+                                                                                                                "value": 3,
+                                                                                                                "nested": [
+                                                                                                                    {
+                                                                                                                        "help": "A developer-defined identifier for the button, max 100 characters.",
+                                                                                                                        "name": "custom_id",
+                                                                                                                        "type": "text",
+                                                                                                                        "label": "Custom ID",
+                                                                                                                        "required": true
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "Danger (red)",
+                                                                                                                "value": 4,
+                                                                                                                "nested": [
+                                                                                                                    {
+                                                                                                                        "help": "A developer-defined identifier for the button, max 100 characters.",
+                                                                                                                        "name": "custom_id",
+                                                                                                                        "type": "text",
+                                                                                                                        "label": "Custom ID",
+                                                                                                                        "required": true
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "Link (grey)",
+                                                                                                                "value": 5,
+                                                                                                                "nested": [
+                                                                                                                    {
+                                                                                                                        "help": "A URL for link-style buttons.",
+                                                                                                                        "name": "url",
+                                                                                                                        "type": "url",
+                                                                                                                        "label": "URL",
+                                                                                                                        "required": true
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        ],
+                                                                                                        "required": true
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "help": "Text that appears on the button, max 80 characters.",
+                                                                                                        "name": "label",
+                                                                                                        "type": "text",
+                                                                                                        "label": "Label"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "disabled",
+                                                                                                        "type": "boolean",
+                                                                                                        "label": "Disabled"
+                                                                                                    }
+                                                                                                ]
+                                                                                            },
+                                                                                            {
+                                                                                                "label": "Select Menu",
+                                                                                                "value": 3,
+                                                                                                "nested": [
+                                                                                                    {
+                                                                                                        "help": "A developer-defined identifier for the button, max 100 characters.",
+                                                                                                        "name": "custom_id",
+                                                                                                        "type": "text",
+                                                                                                        "label": "Custom ID",
+                                                                                                        "required": true
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "options",
+                                                                                                        "spec": [
+                                                                                                            {
+                                                                                                                "help": "The user-facing name of the option, max 100 characters.",
+                                                                                                                "name": "label",
+                                                                                                                "type": "text",
+                                                                                                                "label": "Label",
+                                                                                                                "required": true
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "help": "The dev-defined value of the option, max 100 characters.",
+                                                                                                                "name": "value",
+                                                                                                                "type": "text",
+                                                                                                                "label": "Value",
+                                                                                                                "required": true
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "help": "An additional description of the option, max 100 characters.",
+                                                                                                                "name": "description",
+                                                                                                                "type": "text",
+                                                                                                                "label": "Description"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "name": "default",
+                                                                                                                "type": "boolean",
+                                                                                                                "label": "Default"
+                                                                                                            }
+                                                                                                        ],
+                                                                                                        "type": "array",
+                                                                                                        "label": "Options",
+                                                                                                        "required": true,
+                                                                                                        "validate": {
+                                                                                                            "maxItems": 25
+                                                                                                        }
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "help": "Custom placeholder text if nothing is selected, max 150 characters.",
+                                                                                                        "name": "placeholder",
+                                                                                                        "type": "text",
+                                                                                                        "label": "Placeholder"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "help": "The minimum number of items that must be chosen; default 1, min 0, max 2.",
+                                                                                                        "name": "min_values",
+                                                                                                        "type": "uinteger",
+                                                                                                        "label": "Minimum values"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "help": "The maximum number of items that must be chosen; default 1, max 25.",
+                                                                                                        "name": "max_values",
+                                                                                                        "type": "uinteger",
+                                                                                                        "label": "Maximum values"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "disabled",
+                                                                                                        "type": "boolean",
+                                                                                                        "label": "Disabled"
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ],
+                                                                                        "required": true
+                                                                                    }
+                                                                                ],
+                                                                                "type": "array",
+                                                                                "label": "Row Components",
+                                                                                "required": true
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ],
+                                                                "required": true
+                                                            }
+                                                        ],
+                                                        "type": "array",
+                                                        "label": "Components"
+                                                    },
+                                                    {
+                                                        "name": "files",
+                                                        "spec": [
+                                                            {
+                                                                "name": "filename",
+                                                                "type": "filename",
+                                                                "label": "File Name",
+                                                                "required": true,
+                                                                "semantic": "file:name"
+                                                            },
+                                                            {
+                                                                "name": "data",
+                                                                "type": "buffer",
+                                                                "label": "Data",
+                                                                "required": true,
+                                                                "semantic": "file:data"
+                                                            }
+                                                        ],
+                                                        "type": "array",
+                                                        "label": "Files"
+                                                    },
+                                                    {
+                                                        "name": "message_reference",
+                                                        "spec": [
+                                                            {
+                                                                "name": "message_id",
+                                                                "type": "text",
+                                                                "label": "Message ID"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Message Reference"
+                                                    },
+                                                    {
+                                                        "name": "channelId",
+                                                        "type": "select",
+                                                        "label": "Channel ID",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "advanced": true
+                                            }
+                                        },
+                                        {
+                                            "id": 42,
+                                            "module": "discord:createAGuildEvent",
+                                            "version": 2,
+                                            "parameters": {
+                                                "__IMTCONN__": 1702468
+                                            },
+                                            "mapper": {
+                                                "name": "{{1.title}}",
+                                                "location": "{{1.location.venue}}\n{{1.location.address_lines[]}}\n{{1.location.locality}}, {{1.location.region}} {{1.location.postal_code}}",
+                                                "description": "{{stripHTML(1.description)}}",
+                                                "entity_type": 3,
+                                                "scheduled_end_time": "{{1.end_date}}",
+                                                "scheduled_start_time": "{{1.start_date}}"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 600
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "entity_type": {
+                                                            "mode": "chose",
+                                                            "label": "External"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "discord"
+                                                            },
+                                                            "label": "My Discord connection (Integromat (integromat))"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:discord",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "name",
+                                                        "type": "text",
+                                                        "label": "Event Name",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "entity_type",
+                                                        "type": "select",
+                                                        "label": "Entity Type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                1,
+                                                                2,
+                                                                3
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "location",
+                                                        "type": "text",
+                                                        "label": "Location"
+                                                    },
+                                                    {
+                                                        "name": "channel_id",
+                                                        "type": "text",
+                                                        "label": "Channel ID"
+                                                    },
+                                                    {
+                                                        "name": "scheduled_start_time",
+                                                        "time": true,
+                                                        "type": "date",
+                                                        "label": "Start Time",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "scheduled_end_time",
+                                                        "time": true,
+                                                        "type": "date",
+                                                        "label": "End Time"
+                                                    },
+                                                    {
+                                                        "name": "description",
+                                                        "type": "text",
+                                                        "label": "Description"
+                                                    },
+                                                    {
+                                                        "name": "filename",
+                                                        "type": "filename",
+                                                        "label": "Image File Name",
+                                                        "extension": [
+                                                            "jpg",
+                                                            "jpeg",
+                                                            "png",
+                                                            "gif"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "name": "data",
+                                                        "type": "buffer",
+                                                        "label": "Image Data"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 7,
+                                            "module": "facebook-pages:CreatePost",
+                                            "version": 6,
+                                            "parameters": {
+                                                "__IMTCONN__": 1708426
+                                            },
+                                            "mapper": {
+                                                "link": "{{1.browser_url}}",
+                                                "message": "{{stripHTML(1.description)}}",
+                                                "page_id": "120545324467280"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 900
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "page_id": {
+                                                            "mode": "chose",
+                                                            "label": "Manhattan DSA (Manhattan)"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "facebook"
+                                                            },
+                                                            "label": "MHK DSA FB (Manhattan Kansas)"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:facebook",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "page_id",
+                                                        "type": "select",
+                                                        "label": "Page",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "message",
+                                                        "type": "text",
+                                                        "label": "Message"
+                                                    },
+                                                    {
+                                                        "name": "link",
+                                                        "type": "url",
+                                                        "label": "Link"
+                                                    },
+                                                    {
+                                                        "name": "name",
+                                                        "type": "text",
+                                                        "label": "Link name"
+                                                    },
+                                                    {
+                                                        "name": "description",
+                                                        "type": "text",
+                                                        "label": "Link description"
+                                                    },
+                                                    {
+                                                        "name": "date",
+                                                        "type": "date",
+                                                        "label": "Date"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 2,
+                                            "module": "twitter:createATweet",
+                                            "version": 6,
+                                            "parameters": {
+                                                "__IMTCONN__": 1702460
+                                            },
+                                            "mapper": {
+                                                "text": "MHK DSA is hosting an event: {{1.title}}\n\nSign up and learn more here: {{1.browser_url}}"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 1200
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "media_ids": {
+                                                            "mode": "edit"
+                                                        },
+                                                        "for_super_followers_only": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "twitter2"
+                                                            },
+                                                            "label": "My Twitter OAuth 2.0 connection (MHK_DSA)"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:twitter2",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "text",
+                                                        "type": "text",
+                                                        "label": "Text Content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "mode": "edit",
+                                                        "name": "media_ids",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "type": "text"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Media IDs"
+                                                    },
+                                                    {
+                                                        "name": "place_id",
+                                                        "type": "text",
+                                                        "label": "Place ID"
+                                                    },
+                                                    {
+                                                        "name": "direct_message_deep_link",
+                                                        "type": "url",
+                                                        "label": "Direct Message Link"
+                                                    },
+                                                    {
+                                                        "name": "for_super_followers_only",
+                                                        "type": "boolean",
+                                                        "label": "Allow to Tweet Exclusively for Super Followers Only"
+                                                    },
+                                                    {
+                                                        "name": "quote_tweet_id",
+                                                        "type": "text",
+                                                        "label": "Quote Tweet ID"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 39,
+                            "module": "datastore:SearchRecord",
+                            "version": 1,
+                            "parameters": {
+                                "limit": null,
+                                "datastore": 31581,
+                                "continueWhenNoRes": false
+                            },
+                            "mapper": {
+                                "sort": [],
+                                "filter": [
+                                    [
+                                        {
+                                            "a": "event_id",
+                                            "b": "{{1.browser_url}}",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "post_wp",
+                                            "b": "{{true}}",
+                                            "o": "boolean:notequal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "datastore": {
+                                            "label": "post_history"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "datastore",
+                                        "type": "datastore",
+                                        "label": "Data store",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "continueWhenNoRes",
+                                        "type": "boolean",
+                                        "label": "Continue the execution of the route even if the module returns no results"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "filter",
+                                        "type": "filter",
+                                        "label": "Filter",
+                                        "options": "rpc://datastore/1.9.21/RpcGetUDTKeys",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sort",
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "select",
+                                                "label": "Key",
+                                                "dynamic": true,
+                                                "options": [],
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "order",
+                                                "type": "select",
+                                                "label": "Order",
+                                                "options": [
+                                                    {
+                                                        "label": "Ascending",
+                                                        "value": 1
+                                                    },
+                                                    {
+                                                        "label": "Descending",
+                                                        "value": -1
+                                                    }
+                                                ],
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Sort"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "key",
+                                        "type": "text",
+                                        "label": "Key"
+                                    },
+                                    {
+                                        "name": "data",
+                                        "spec": [
+                                            {
+                                                "name": "post_wp",
+                                                "type": "boolean",
+                                                "label": null,
+                                                "default": false,
+                                                "required": false
+                                            },
+                                            {
+                                                "name": "post_calendar",
+                                                "type": "boolean",
+                                                "label": null,
+                                                "default": false,
+                                                "required": false
+                                            },
+                                            {
+                                                "name": "event_id",
+                                                "type": "text",
+                                                "label": null,
+                                                "default": null,
+                                                "required": true,
+                                                "multiline": false
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "module": "http:ActionGetFile",
+                            "version": 3,
+                            "parameters": {
+                                "handleErrors": false
+                            },
+                            "mapper": {
+                                "url": "{{1.featured_image_url}}",
+                                "method": "get",
+                                "serializeUrl": true,
+                                "shareCookies": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 0
+                                },
+                                "restore": {},
+                                "parameters": [
+                                    {
+                                        "name": "handleErrors",
+                                        "type": "boolean",
+                                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "serializeUrl",
+                                        "type": "boolean",
+                                        "label": "Serialize URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "hidden",
+                                        "label": "Method"
+                                    },
+                                    {
+                                        "name": "shareCookies",
+                                        "type": "boolean",
+                                        "label": "Share cookies with other HTTP modules",
+                                        "required": true
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 14,
+                            "module": "wordpress:createMediaItem",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1707216
+                            },
+                            "mapper": {
+                                "data": "{{17.data}}",
+                                "title": "{{1.title}}",
+                                "fileName": "{{17.fileName}}",
+                                "description": "{{stripHTML(1.description)}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "wordpress4"
+                                            },
+                                            "label": "My WordPress connection (user)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:wordpress4",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "fileName",
+                                        "type": "filename",
+                                        "label": "File name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "title",
+                                        "type": "text",
+                                        "label": "Title"
+                                    },
+                                    {
+                                        "name": "altText",
+                                        "type": "text",
+                                        "label": "Alternative text"
+                                    },
+                                    {
+                                        "name": "caption",
+                                        "type": "text",
+                                        "label": "Caption"
+                                    },
+                                    {
+                                        "name": "description",
+                                        "type": "text",
+                                        "label": "Description"
+                                    },
+                                    {
+                                        "name": "post",
+                                        "type": "number",
+                                        "label": "Post ID"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 13,
+                            "module": "wordpress:createPost",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1707216
+                            },
+                            "mapper": {
+                                "date": "{{1.created_date}}",
+                                "slug": "{{replace(lower(1.name); ; \"_\")}}",
+                                "type": "jb_store_css",
+                                "title": "{{1.title}}",
+                                "author": 2,
+                                "format": "standard",
+                                "status": "publish",
+                                "content": "{{1.description}}",
+                                "categories": [
+                                    10
+                                ],
+                                "featuredMedia": "{{14.ID}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "meta": {
+                                            "mode": "chose"
+                                        },
+                                        "tags": {
+                                            "mode": "chose",
+                                            "collapsed": true
+                                        },
+                                        "type": {
+                                            "mode": "chose",
+                                            "label": "Posts"
+                                        },
+                                        "author": {
+                                            "mode": "chose",
+                                            "label": "MHK DSA"
+                                        },
+                                        "format": {
+                                            "mode": "chose",
+                                            "label": "Standard"
+                                        },
+                                        "status": {
+                                            "mode": "chose",
+                                            "label": "Publish"
+                                        },
+                                        "sticky": {
+                                            "mode": "chose"
+                                        },
+                                        "taxonomy": {
+                                            "mode": "chose"
+                                        },
+                                        "categories": {
+                                            "mode": "chose",
+                                            "label": [
+                                                "Events"
+                                            ]
+                                        },
+                                        "pingStatus": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "commentStatus": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "wordpress4"
+                                            },
+                                            "label": "My WordPress connection (user)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:wordpress4",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "title",
+                                        "type": "text",
+                                        "label": "Title",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "type",
+                                        "type": "select",
+                                        "label": "Type",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "excerpt",
+                                        "type": "text",
+                                        "label": "Excerpt"
+                                    },
+                                    {
+                                        "name": "date",
+                                        "type": "date",
+                                        "label": "Date"
+                                    },
+                                    {
+                                        "name": "slug",
+                                        "type": "text",
+                                        "label": "Slug"
+                                    },
+                                    {
+                                        "name": "status",
+                                        "type": "select",
+                                        "label": "Status"
+                                    },
+                                    {
+                                        "name": "format",
+                                        "type": "select",
+                                        "label": "Format"
+                                    },
+                                    {
+                                        "name": "parent",
+                                        "type": "number",
+                                        "label": "Parent object ID"
+                                    },
+                                    {
+                                        "name": "categories",
+                                        "type": "select",
+                                        "label": "Categories",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "tags",
+                                        "type": "select",
+                                        "label": "Tags",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "author",
+                                        "type": "select",
+                                        "label": "Author"
+                                    },
+                                    {
+                                        "name": "featuredMedia",
+                                        "type": "number",
+                                        "label": "Featured media ID"
+                                    },
+                                    {
+                                        "name": "template",
+                                        "type": "text",
+                                        "label": "Template"
+                                    },
+                                    {
+                                        "name": "password",
+                                        "type": "text",
+                                        "label": "Password"
+                                    },
+                                    {
+                                        "name": "sticky",
+                                        "type": "boolean",
+                                        "label": "Sticky"
+                                    },
+                                    {
+                                        "name": "commentStatus",
+                                        "type": "select",
+                                        "label": "Comment status",
+                                        "validate": {
+                                            "enum": [
+                                                "open",
+                                                "closed"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "pingStatus",
+                                        "type": "select",
+                                        "label": "Ping status",
+                                        "validate": {
+                                            "enum": [
+                                                "open",
+                                                "closed"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "taxonomy",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "values",
+                                                "type": "array",
+                                                "label": "Values",
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Additional fields"
+                                    },
+                                    {
+                                        "name": "meta",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Metadata (custom fields)"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 31,
+                            "module": "datastore:AddRecord",
+                            "version": 1,
+                            "parameters": {
+                                "datastore": 31581
+                            },
+                            "mapper": {
+                                "key": "{{1.browser_url}}",
+                                "data": {
+                                    "post_wp": true,
+                                    "event_id": "{{1.browser_url}}",
+                                    "post_calendar": "{{ignore}}"
+                                },
+                                "overwrite": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "data": {
+                                            "nested": {
+                                                "post_wp": {
+                                                    "mode": "chose"
+                                                },
+                                                "post_calendar": {
+                                                    "mode": "edit"
+                                                }
+                                            }
+                                        },
+                                        "overwrite": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "datastore": {
+                                            "label": "post_history"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "datastore",
+                                        "type": "datastore",
+                                        "label": "Data store",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "key",
+                                        "type": "text",
+                                        "label": "Key"
+                                    },
+                                    {
+                                        "name": "overwrite",
+                                        "type": "boolean",
+                                        "label": "Overwrite an existing record",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "spec": [
+                                            {
+                                                "name": "post_wp",
+                                                "type": "boolean",
+                                                "label": null
+                                            },
+                                            {
+                                                "name": "post_calendar",
+                                                "type": "boolean",
+                                                "label": null
+                                            },
+                                            {
+                                                "name": "event_id",
+                                                "type": "text",
+                                                "label": null
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 40,
+                            "module": "datastore:SearchRecord",
+                            "version": 1,
+                            "parameters": {
+                                "limit": null,
+                                "datastore": 31581,
+                                "continueWhenNoRes": false
+                            },
+                            "mapper": {
+                                "sort": [],
+                                "filter": [
+                                    [
+                                        {
+                                            "a": "event_id",
+                                            "b": "{{1.browser_url}}",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "post_calendar",
+                                            "b": "{{true}}",
+                                            "o": "boolean:notequal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "datastore": {
+                                            "label": "post_history"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "datastore",
+                                        "type": "datastore",
+                                        "label": "Data store",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "continueWhenNoRes",
+                                        "type": "boolean",
+                                        "label": "Continue the execution of the route even if the module returns no results"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "filter",
+                                        "type": "filter",
+                                        "label": "Filter",
+                                        "options": "rpc://datastore/1.9.21/RpcGetUDTKeys",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sort",
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "select",
+                                                "label": "Key",
+                                                "dynamic": true,
+                                                "options": [],
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "order",
+                                                "type": "select",
+                                                "label": "Order",
+                                                "options": [
+                                                    {
+                                                        "label": "Ascending",
+                                                        "value": 1
+                                                    },
+                                                    {
+                                                        "label": "Descending",
+                                                        "value": -1
+                                                    }
+                                                ],
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Sort"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "key",
+                                        "type": "text",
+                                        "label": "Key"
+                                    },
+                                    {
+                                        "name": "data",
+                                        "spec": [
+                                            {
+                                                "name": "post_wp",
+                                                "type": "boolean",
+                                                "label": null,
+                                                "default": false,
+                                                "required": false
+                                            },
+                                            {
+                                                "name": "post_calendar",
+                                                "type": "boolean",
+                                                "label": null,
+                                                "default": false,
+                                                "required": false
+                                            },
+                                            {
+                                                "name": "event_id",
+                                                "type": "text",
+                                                "label": null,
+                                                "default": null,
+                                                "required": true,
+                                                "multiline": false
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "module": "google-calendar:createAnEvent",
+                            "version": 5,
+                            "parameters": {
+                                "__IMTCONN__": 1702691
+                            },
+                            "mapper": {
+                                "end": "{{1.end_date}}",
+                                "start": "{{1.start_date}}",
+                                "select": "detail",
+                                "summary": "{{1.title}}",
+                                "calendar": "manhattan.ks.dsa@gmail.com",
+                                "location": " {{1.location.venue}}\n{{1.location.address_lines[]}}\n{{1.location.locality}}, {{1.location.region}}\n{{1.location.postal_code}}",
+                                "useDefault": true,
+                                "visibility": "public",
+                                "allDayEvent": false,
+                                "description": "{{stripHTML(1.description)}}",
+                                "sendUpdates": "all",
+                                "transparency": "opaque",
+                                "conferenceDate": false,
+                                "guestsCanModify": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "select": {
+                                            "label": "In Detail"
+                                        },
+                                        "colorId": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "calendar": {
+                                            "mode": "chose",
+                                            "label": "manhattan.ks.dsa@gmail.com (Primary Calendar)"
+                                        },
+                                        "duration": {
+                                            "collapsed": true
+                                        },
+                                        "attendees": {
+                                            "mode": "chose"
+                                        },
+                                        "overrides": {
+                                            "mode": "chose"
+                                        },
+                                        "recurrence": {
+                                            "mode": "chose"
+                                        },
+                                        "visibility": {
+                                            "mode": "chose",
+                                            "label": "Public"
+                                        },
+                                        "allDayEvent": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        },
+                                        "sendUpdates": {
+                                            "mode": "chose",
+                                            "label": "To All Guests"
+                                        },
+                                        "transparency": {
+                                            "mode": "chose",
+                                            "label": "Busy"
+                                        },
+                                        "conferenceDate": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "My Google connection (manhattan.ks.dsa@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Create an Event",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "quick",
+                                                "detail"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "calendar",
+                                        "type": "select",
+                                        "label": "Calendar ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "colorId",
+                                        "type": "select",
+                                        "label": "Color"
+                                    },
+                                    {
+                                        "name": "summary",
+                                        "type": "text",
+                                        "label": "Event Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "allDayEvent",
+                                        "type": "boolean",
+                                        "label": "All Day Event",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "start",
+                                        "time": true,
+                                        "type": "date",
+                                        "label": "Start Date",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "end",
+                                        "time": true,
+                                        "type": "date",
+                                        "label": "End Date"
+                                    },
+                                    {
+                                        "name": "duration",
+                                        "type": "time",
+                                        "label": "Duration"
+                                    },
+                                    {
+                                        "name": "description",
+                                        "type": "text",
+                                        "label": "Description"
+                                    },
+                                    {
+                                        "name": "location",
+                                        "type": "text",
+                                        "label": "Location"
+                                    },
+                                    {
+                                        "name": "useDefault",
+                                        "type": "boolean",
+                                        "label": "Use the default reminder settings for this event"
+                                    },
+                                    {
+                                        "name": "overrides",
+                                        "spec": [
+                                            {
+                                                "name": "method",
+                                                "type": "select",
+                                                "label": "Method",
+                                                "options": [
+                                                    {
+                                                        "label": "Email",
+                                                        "value": "email"
+                                                    },
+                                                    {
+                                                        "label": "Pop-up",
+                                                        "value": "popup"
+                                                    }
+                                                ],
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "minutes",
+                                                "type": "uinteger",
+                                                "label": "Minutes",
+                                                "required": true,
+                                                "validate": {
+                                                    "max": 40320
+                                                }
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Reminders",
+                                        "validate": {
+                                            "maxItems": 5
+                                        }
+                                    },
+                                    {
+                                        "name": "attendees",
+                                        "spec": [
+                                            {
+                                                "name": "displayName",
+                                                "type": "text",
+                                                "label": "Name"
+                                            },
+                                            {
+                                                "name": "email",
+                                                "type": "email",
+                                                "label": "Email",
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attendees"
+                                    },
+                                    {
+                                        "name": "transparency",
+                                        "type": "select",
+                                        "label": "Show me as",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "opaque",
+                                                "transparent"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "visibility",
+                                        "type": "select",
+                                        "label": "Visibility",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "default",
+                                                "public",
+                                                "private"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "sendUpdates",
+                                        "type": "select",
+                                        "label": "Send notifications about the event creation",
+                                        "validate": {
+                                            "enum": [
+                                                "all",
+                                                "externalOnly",
+                                                "none"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "guestsCanModify",
+                                        "type": "boolean",
+                                        "label": "Guests can modify the event",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "recurrence",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Value"
+                                        },
+                                        "type": "array",
+                                        "label": "Recurrence"
+                                    },
+                                    {
+                                        "name": "conferenceDate",
+                                        "type": "boolean",
+                                        "label": "Add Google Meet Video Conferencing",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileUrl",
+                                                "type": "url",
+                                                "label": "File URL",
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 22,
+                            "module": "datastore:AddRecord",
+                            "version": 1,
+                            "parameters": {
+                                "datastore": 31581
+                            },
+                            "mapper": {
+                                "key": "{{1.browser_url}}",
+                                "data": {
+                                    "post_wp": "{{ignore}}",
+                                    "event_id": "{{1.browser_url}}",
+                                    "post_calendar": true
+                                },
+                                "overwrite": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "data": {
+                                            "nested": {
+                                                "post_wp": {
+                                                    "mode": "edit"
+                                                },
+                                                "post_calendar": {
+                                                    "mode": "chose"
+                                                }
+                                            }
+                                        },
+                                        "overwrite": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "datastore": {
+                                            "label": "post_history"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "datastore",
+                                        "type": "datastore",
+                                        "label": "Data store",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "key",
+                                        "type": "text",
+                                        "label": "Key"
+                                    },
+                                    {
+                                        "name": "overwrite",
+                                        "type": "boolean",
+                                        "label": "Overwrite an existing record",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "spec": [
+                                            {
+                                                "name": "post_wp",
+                                                "type": "boolean",
+                                                "label": null
+                                            },
+                                            {
+                                                "name": "post_calendar",
+                                                "type": "boolean",
+                                                "label": null
+                                            },
+                                            {
+                                                "name": "event_id",
+                                                "type": "text",
+                                                "label": null
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": true,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": true,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us1.make.com"
+    }
+}
